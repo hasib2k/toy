@@ -31,14 +31,17 @@ document.addEventListener('DOMContentLoaded', function(){
   }
   // Attach modal open handler to any .order-trigger buttons (handles multiple buttons)
   var orderTriggers = document.querySelectorAll('.order-trigger');
+  var savedScrollY = 0;
   if(orderTriggers && orderTriggers.length){
     orderTriggers.forEach(function(btn){
       btn.addEventListener('click', function(e){
         e.preventDefault();
         if(!modal) return;
+        savedScrollY = window.scrollY;
         modal.style.display = 'flex';
         modal.setAttribute('aria-hidden','false');
-        document.body.style.overflow = 'hidden';
+        document.body.classList.add('modal-open');
+        document.body.style.top = '-' + savedScrollY + 'px';
         // focus the name input for quick entry (after modal visible)
         setTimeout(function(){
           var nameEl = document.getElementById('name');
@@ -53,7 +56,9 @@ document.addEventListener('DOMContentLoaded', function(){
     if(!modal) return;
     modal.setAttribute('aria-hidden','true');
     try{ modal.style.display = 'none'; }catch(e){}
-    document.body.style.overflow = '';
+    document.body.classList.remove('modal-open');
+    document.body.style.top = '';
+    window.scrollTo(0, savedScrollY);
     // return focus to the primary order trigger (if present)
     var primary = document.querySelector('.order-trigger');
     if(primary && typeof primary.focus === 'function') primary.focus();
@@ -156,9 +161,9 @@ document.addEventListener('DOMContentLoaded', function(){
     areaRadios.forEach(function(r){ r.addEventListener('change', updateTotals); });
   }
 
-  // Segmented toggle for delivery area (keeps select for form submission)
+  // Segmented toggle for delivery area (modal form - keeps select for form submission)
   (function(){
-    var areaToggle = document.querySelector('.area-toggle');
+    var areaToggle = document.querySelector('#orderForm .area-toggle');
     var select = document.getElementById('area');
     if(!areaToggle) return;
     var opts = Array.from(areaToggle.querySelectorAll('.area-option'));
@@ -230,8 +235,23 @@ document.addEventListener('DOMContentLoaded', function(){
   updateTotalsInline();
 
   orderForm.addEventListener('submit', function(e){
-    e.preventDefault();
-    formMessage.textContent = 'অর্ডার প্রক্রিয়াকরণ...';
+    e.preventDefault();    
+    // Client-side validation: ensure required fields are filled
+    var requiredFields = Array.from(orderForm.querySelectorAll('[required]'));
+    var firstInvalid = null;
+    for(var i=0;i<requiredFields.length;i++){
+      var el = requiredFields[i];
+      var val = (el.value || '').toString().trim();
+      if(!val){ firstInvalid = el; break; }
+    }
+    if(firstInvalid){
+      formMessage.textContent = 'অনুগ্রহ করে সব তথ্য পূরণ করুন';
+      formMessage.style.color = '#b62810';
+      try{ firstInvalid.focus(); }catch(e){}
+      return;
+    }
+    
+    formMessage.style.color = '';    formMessage.textContent = 'অর্ডার প্রক্রিয়াকরণ...';
 
     // update hidden or computed values
     var data = new FormData(orderForm);
@@ -366,10 +386,13 @@ document.addEventListener('DOMContentLoaded', function(){
   var closeVideo = document.getElementById('closeVideo');
   var productVideo = document.getElementById('productVideo');
   var videoUnmute = document.getElementById('videoUnmute');
+  var videoScrollY = 0;
 
   function openVideoModalLocal(){
+    videoScrollY = window.scrollY;
     if(videoModal){ videoModal.setAttribute('aria-hidden','false'); }
-    document.body.style.overflow = 'hidden';
+    document.body.classList.add('modal-open');
+    document.body.style.top = '-' + videoScrollY + 'px';
     if(productVideo){
       try{
         // ensure muted before calling play to satisfy autoplay policies
@@ -383,7 +406,9 @@ document.addEventListener('DOMContentLoaded', function(){
   function closeVideoModalLocal(){
     if(videoModal) videoModal.setAttribute('aria-hidden','true');
     if(productVideo){ try{ productVideo.pause(); productVideo.currentTime = 0; productVideo.muted = true; }catch(e){} }
-    document.body.style.overflow = '';
+    document.body.classList.remove('modal-open');
+    document.body.style.top = '';
+    window.scrollTo(0, videoScrollY);
   }
 
   if(openVideo){ openVideo.addEventListener('click', openVideoModalLocal); }
@@ -413,6 +438,7 @@ document.addEventListener('DOMContentLoaded', function(){
   var lbPrev = document.getElementById('lbPrev');
   var lbNext = document.getElementById('lbNext');
   var currentIndex = 0;
+  var lightboxScrollY = 0;
 
   if(!thumbs || thumbs.length === 0) return;
 
@@ -426,7 +452,11 @@ document.addEventListener('DOMContentLoaded', function(){
     if(lbImg) lbImg.src = src;
     if(lbCaption) lbCaption.textContent = cap;
     if(lightbox) lightbox.setAttribute('aria-hidden','false');
-    document.body.style.overflow = 'hidden';
+    if(!document.body.classList.contains('modal-open')){
+      lightboxScrollY = window.scrollY;
+      document.body.classList.add('modal-open');
+      document.body.style.top = '-' + lightboxScrollY + 'px';
+    }
   }
 
   thumbs.forEach(function(btn, idx){
@@ -439,7 +469,9 @@ document.addEventListener('DOMContentLoaded', function(){
     if(!lightbox) return;
     lightbox.setAttribute('aria-hidden','true');
     if(lbImg) lbImg.src = '';
-    document.body.style.overflow = '';
+    document.body.classList.remove('modal-open');
+    document.body.style.top = '';
+    window.scrollTo(0, lightboxScrollY);
   }
 
   if(closeLb) closeLb.addEventListener('click', closeLightbox);
