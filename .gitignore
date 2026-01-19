@@ -1,0 +1,12 @@
+# ignore uploads and logs
+/public_html/uploads/
+/public_html/logs/
+
+# node
+/node_modules/
+
+# build output (optional)
+/website_build/
+
+# environment
+/public_html/config/.env

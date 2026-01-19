@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="100%" height="100%" fill="#f8fff5"/>
+  <rect x="20" y="20" width="760" height="560" rx="12" fill="#fff" stroke="#e6f4ea"/>
+  <text x="50%" y="50%" text-anchor="middle" font-size="28" fill="#1aa34a" font-family="Arial">Review 22</text>
+  <text x="50%" y="62%" text-anchor="middle" font-size="16" fill="#444">মূল্য অনুকূল, সার্ভিস দ্রুত।</text>
+</svg>

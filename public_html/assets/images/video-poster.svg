@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="100%" height="100%" fill="#fff7f6"/>
+  <rect x="30" y="30" width="1220" height="660" rx="14" fill="#fff" stroke="#fde6e3"/>
+  <circle cx="640" cy="360" r="60" fill="#b62810"/>
+  <polygon points="630,335 630,385 675,360" fill="#fff"/>
+  <text x="50%" y="85%" text-anchor="middle" font-size="18" fill="#666">Video review — replace with real MP4 or YouTube embed</text>
+</svg>

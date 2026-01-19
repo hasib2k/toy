@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="100%" height="100%" fill="#fffaf0"/>
+  <rect x="20" y="20" width="760" height="560" rx="12" fill="#fff" stroke="#fff2d8"/>
+  <text x="50%" y="50%" text-anchor="middle" font-size="28" fill="#b87a00" font-family="Arial">Review 44</text>
+  <text x="50%" y="62%" text-anchor="middle" font-size="16" fill="#444">ডেলিভারি ঠিক সময়ে হয়েছে।</text>
+</svg>

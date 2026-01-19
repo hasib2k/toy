@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="100%" height="100%" fill="#fffef8"/>
+  <rect x="20" y="20" width="760" height="560" rx="12" fill="#fff" stroke="#f3e6e2"/>
+  <text x="50%" y="50%" text-anchor="middle" font-size="28" fill="#b62810" font-family="Arial">Review 11</text>
+  <text x="50%" y="62%" text-anchor="middle" font-size="16" fill="#444">ভাল খেলনা, শিশু খুব উপভোগ করেছে।</text>
+</svg>
