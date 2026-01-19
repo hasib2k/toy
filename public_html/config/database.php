@@ -2,8 +2,8 @@
 // Database connection — update values for your environment
 $DB_HOST = getenv('DB_HOST') ?: '127.0.0.1';
 $DB_NAME = getenv('DB_NAME') ?: 'toy_store';
-$DB_USER = getenv('DB_USER') ?: 'db_user';
-$DB_PASS = getenv('DB_PASS') ?: 'db_pass';
+$DB_USER = getenv('DB_USER') ?: 'root';
+$DB_PASS = getenv('DB_PASS') ?: '';
 
 $options = [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function(){
         if(action === 'increase') current = current + 1;
         else current = Math.max(1, current - 1);
         qtyInput.value = current;
-        updateTotals();
+        if(orderForm) updateTotals();
       });
     });
   }
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function(){
         b.setAttribute('aria-pressed', active ? 'true' : 'false');
       });
       if(select) select.value = value;
-      updateTotals();
+      if(orderForm) updateTotals();
     }
 
     // click handlers
@@ -231,10 +231,10 @@ document.addEventListener('DOMContentLoaded', function(){
   if(areaSelectInline){ areaSelectInline.addEventListener('change', updateTotalsInline); }
 
   // initialize totals
-  updateTotals();
+  if(orderForm) updateTotals();
   updateTotalsInline();
 
-  orderForm.addEventListener('submit', function(e){
+  if(orderForm) orderForm.addEventListener('submit', function(e){
     e.preventDefault();    
     // Client-side validation: ensure required fields are filled
     var requiredFields = Array.from(orderForm.querySelectorAll('[required]'));
@@ -254,8 +254,8 @@ document.addEventListener('DOMContentLoaded', function(){
     formMessage.style.color = '';    formMessage.textContent = 'অর্ডার প্রক্রিয়াকরণ...';
 
     // update hidden or computed values
-    var data = new FormData(orderForm);
-    fetch('/api/create-order.php', {
+    var data = new FormData(orderForm);    // ensure product_id is present
+    if(!data.get('product_id')) data.append('product_id', '1');    fetch('/api/create-order.php', {
       method: 'POST',
       body: data
     }).then(function(res){
