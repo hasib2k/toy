@@ -146,6 +146,26 @@ a {
   text-decoration: none;
 }
 
+/* Remove orange focus border from form controls and provide a neutral focus ring */
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+  border-color: var(--color-border);
+}
+
+/* Improve keyboard focus visibility without orange color */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+  border-color: var(--color-border);
+}
+
 /* ========== UTILITY ========== */
 .sr-only {
   position: absolute !important;
@@ -235,7 +255,7 @@ body.modal-open {
   grid-template-columns: 1.2fr 1fr;
   gap: var(--space-7);
   align-items: start;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .product > * {
@@ -250,56 +270,183 @@ body.modal-open {
   padding: var(--space-6);
   box-shadow: var(--shadow-lg);
   position: sticky;
+  z-index: 5;
   top: var(--space-5);
   border: 1px solid var(--color-border-light);
 }
 
-.main-image {
+/* Hero Carousel */
+.hero-carousel {
+  width: 100%;
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  min-height: 580px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: linear-gradient(145deg, #f8f9fa 0%, #edf2f7 100%);
+  box-shadow: var(--shadow-inner);
+}
+
+.carousel-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.carousel-slide {
+  min-width: 100%;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 1 / 1;
-  background: linear-gradient(145deg, #f8f9fa 0%, #edf2f7 100%);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin-bottom: var(--space-5);
-  position: relative;
+  padding: var(--space-1);
+  background: var(--color-white);
 }
 
-.main-image::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-inner);
-  pointer-events: none;
-}
-
-.main-image img {
-  max-width: 90%;
-  max-height: 90%;
+.carousel-slide img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
+/* all slides use white background now */
+
+/* Carousel Navigation Arrows */
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  box-shadow: var(--shadow-md);
+  color: var(--color-dark);
+  z-index: 10;
+  opacity: 0;
+}
+
+.carousel-container:hover .carousel-nav,
+.carousel-nav:focus {
+  opacity: 1;
+}
+
+.carousel-prev {
+  left: calc(-1 * var(--space-3));
+}
+
+.carousel-next {
+  right: calc(-1 * var(--space-3));
+}
+
+.carousel-nav:hover {
+  background: var(--color-white);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.carousel-nav:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.carousel-nav svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Carousel Dots */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding: var(--space-2) 0;
+}
+
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  padding: 0;
+}
+
+.carousel-dot:hover {
+  background: var(--color-muted);
+}
+
+.carousel-dot.active {
+  background: var(--color-primary);
+  width: 28px;
+}
+
+/* Thumbnails */
 .thumbs {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: var(--space-3);
-  overflow-x: auto;
+  margin-top: var(--space-4);
   padding: var(--space-2);
-  margin: calc(-1 * var(--space-2));
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
 }
 
+.thumb {
+  width: 72px;
+  height: 72px;
+  min-width: 72px;
+  padding: 0;
+  border-radius: var(--radius-md);
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  overflow: hidden;
+  opacity: 0.6;
+  background: var(--color-light);
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumb:hover {
+  opacity: 0.9;
+  border-color: var(--color-border);
+}
+
+.thumb.active {
+  border-color: var(--color-primary);
+  opacity: 1;
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
+}
+
+/* Legacy support for old thumbs styling if needed */
 .thumbs::-webkit-scrollbar {
   display: none;
 }
 
-.thumbs img {
+.thumbs img.thumb {
   width: 72px;
   height: 72px;
   min-width: 72px;
@@ -312,12 +459,12 @@ body.modal-open {
   opacity: 0.7;
 }
 
-.thumbs img:hover {
+.thumbs img.thumb:hover {
   opacity: 1;
   border-color: var(--color-border);
 }
 
-.thumbs img.active {
+.thumbs img.thumb.active {
   border-color: var(--color-primary);
   opacity: 1;
   box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
@@ -373,14 +520,15 @@ body.modal-open {
 .discount {
   display: inline-flex;
   align-items: center;
-  background: var(--color-primary);
-  color: var(--color-white);
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-full);
   font-size: var(--font-size-sm);
   font-weight: 700;
   margin-top: var(--space-2);
-  box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
+  box-shadow: none;
 }
 
 .stock-actions {
@@ -531,6 +679,44 @@ body.modal-open {
   background: #2d2d44;
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
+}
+
+/* Strong override to remove any persistent red/orange focus rings on inputs
+   Scoped to order forms and global inputs; uses !important to beat other rules. */
+/* Keep keyboard focus visible via other styles if needed; this simply removes the red color. */
+.order-inline-form input:focus,
+.order-inline-form textarea:focus,
+.order-inline-form select:focus,
+.order-modal-form input:focus,
+.order-modal-form textarea:focus,
+.order-modal-form select:focus,
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus,
+button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: var(--color-border) !important;
+}
+
+/* Also neutralize focus-visible for keyboard users if the browser applies a colored ring */
+.order-inline-form input:focus-visible,
+.order-inline-form textarea:focus-visible,
+.order-inline-form select:focus-visible,
+.order-modal-form input:focus-visible,
+.order-modal-form textarea:focus-visible,
+.order-modal-form select:focus-visible,
+input[type="text"]:focus-visible,
+input[type="tel"]:focus-visible,
+input[type="number"]:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: var(--color-border) !important;
 }
 
 .btn-secondary2 {
@@ -857,7 +1043,7 @@ body.modal-open {
   margin-top: var(--space-8);
   background: var(--bg-card);
   border-radius: var(--radius-xl);
-  padding: var(--space-7);
+  padding: calc(var(--space-10)) var(--space-7); /* further increase vertical padding to lengthen the white card */
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--color-border-light);
 }
@@ -872,8 +1058,9 @@ body.modal-open {
 
 .review-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: calc(var(--space-6));
+  min-height: 420px; /* ensure gallery area contributes to card height */
 }
 
 .review-thumb {
@@ -890,13 +1077,13 @@ body.modal-open {
 
 .review-thumb:hover {
   transform: translateY(-6px);
-  box-shadow: var(--shadow-xl);
-  border-color: var(--color-primary);
+  box-shadow: none !important;
+  border-color: transparent !important;
 }
 
 .review-thumb img {
   width: 100%;
-  height: 160px;
+  height: 300px;
   object-fit: cover;
   border-radius: var(--radius-md);
 }
@@ -907,6 +1094,17 @@ body.modal-open {
   color: var(--color-text-light);
   text-align: center;
   font-weight: 500;
+}
+
+/* Override: remove colored focus/hover outlines on review thumbnails */
+.review-thumb:hover,
+.review-thumb:focus,
+.review-thumb:active,
+.review-thumb img:hover,
+.review-thumb img:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
 }
 
 /* Lightbox */
@@ -1124,10 +1322,15 @@ body.modal-open {
 
 .order-thumb {
   width: 100%;
-  height: 300px;
-  object-fit: cover;
+  height: 340px;
+  object-fit: contain;
   border-radius: var(--radius-lg);
   flex-shrink: 0;
+  background: var(--color-white);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-md);
+  display: block;
+  margin: 0 auto;
 }
 
 .order-info {
@@ -1238,35 +1441,78 @@ body.modal-open {
 }
 
 .area-toggle {
-  display: flex;
-  border: 2px solid var(--color-border);
+  display: inline-flex;
+  gap: var(--space-1);
   border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--bg-card);
-}
-
-.area-option {
-  flex: 1;
-  padding: var(--space-4) var(--space-3);
-  border: none;
   background: transparent;
-  font-size: var(--font-size-sm);
-  color: var(--color-text);
+}
+
+
+.area-toggle .area-option {
+  flex: 0 0 calc(50% - var(--space-1));
+  max-width: calc(50% - var(--space-1));
+  padding: calc(var(--space-2)) var(--space-3);
+  border: 2px solid transparent;
+  background: var(--bg-card);
+  font-size: 14px;
+  color: var(--color-dark);
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: background .14s ease, border-color .1s ease, transform .06s ease, box-shadow .1s ease;
   text-align: center;
-  min-height: 52px;
-  font-weight: 500;
-}
-
-.area-option:not(:first-child) {
-  border-left: 2px solid var(--color-border);
-}
-
-.area-option[aria-pressed="true"] {
-  background: var(--color-primary-gradient);
-  color: var(--color-white);
+  min-height: 40px;
   font-weight: 600;
+  border-radius: var(--radius-md);
+}
+
+.area-toggle .area-option + .area-option {
+  margin-left: var(--space-1);
+}
+
+.area-toggle .area-option[aria-pressed="true"],
+.area-toggle .area-option.active {
+  background: linear-gradient(180deg, rgba(6,214,160,0.10), rgba(6,214,160,0.04));
+  border-color: rgba(6,214,160,0.35);
+  color: var(--color-primary);
+  box-shadow: 0 6px 18px rgba(6,214,160,0.06);
+  transform: translateY(-1px);
+}
+
+.area-toggle .area-option:hover {
+  background: rgba(0,0,0,0.03);
+}
+
+.area-toggle .area-option:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(6,214,160,0.06);
+}
+
+/* Inline variant (used in the small order card) — slightly smaller */
+.area-toggle-inline .area-option {
+  padding: calc(var(--space-1)) var(--space-2);
+  font-size: 13px;
+  min-height: 36px;
+}
+
+@media (max-width: 600px) {
+  .area-toggle { gap: var(--space-2); }
+  /* Use grid to guarantee two equal columns on small screens */
+  .area-toggle { display: grid; grid-template-columns: 1fr 1fr; width: 100%; gap: var(--space-1); }
+  .area-toggle .area-option {
+    display: block;
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    font-size: 13px;
+    min-height: 36px;
+    box-sizing: border-box;
+    margin-left: 0;
+    border-radius: var(--radius-md);
+    white-space: normal; /* allow wrapping so full text is visible */
+    overflow: visible;
+    text-overflow: clip;
+  }
+  /* ensure the inline/smaller variant behaves the same on tiny screens */
+  .area-toggle-inline { width: 100%; }
+  .area-toggle-inline .area-option { width: 100%; }
 }
 
 /* Summary */
@@ -1287,6 +1533,62 @@ body.modal-open {
   white-space: nowrap;
 }
 
+/* ===== Scoped: Order-area toggle (only for order sections) =====
+   Keep this local so other area-toggle uses are unaffected. */
+#order-cta .area-toggle,
+#orderModal .area-toggle,
+.order-inline-form .area-toggle,
+.order-modal-form .area-toggle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+#order-cta .area-toggle .area-option,
+#orderModal .area-toggle .area-option,
+.order-inline-form .area-toggle .area-option,
+.order-modal-form .area-toggle .area-option {
+  flex: 0 0 48%;
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--color-dark);
+  text-align: center;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#order-cta .area-toggle .area-option[aria-pressed="true"],
+#orderModal .area-toggle .area-option[aria-pressed="true"],
+.order-inline-form .area-toggle .area-option[aria-pressed="true"],
+.order-modal-form .area-toggle .area-option[aria-pressed="true"],
+#order-cta .area-toggle .area-option.active,
+#orderModal .area-toggle .area-option.active,
+.order-inline-form .area-toggle .area-option.active,
+.order-modal-form .area-toggle .area-option.active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+@media (max-width: 480px) {
+  #order-cta .area-toggle .area-option,
+  #orderModal .area-toggle .area-option,
+  .order-inline-form .area-toggle .area-option,
+  .order-modal-form .area-toggle .area-option {
+    font-size: 12px;
+    padding: 6px 8px;
+    flex: 0 0 48%;
+  }
+}
+
 .summary strong {
   color: var(--color-dark);
   font-size: var(--font-size-lg);
@@ -1301,6 +1603,37 @@ body.modal-open {
   width: 100%;
   padding: var(--space-5);
   font-size: var(--font-size-lg);
+}
+
+/* Make inline order submit button match the small top order button color */
+#order-cta .form-actions .btn-primary,
+.order-inline-form .form-actions .btn-primary {
+  background: var(--color-dark);
+  color: var(--color-white);
+  box-shadow: none;
+}
+
+#order-cta .form-actions .btn-primary:hover,
+.order-inline-form .form-actions .btn-primary:hover {
+  background: #2d2d44;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* WhatsApp-style button for inline ordering */
+#whatsappCardBtn,
+.btn-whatsapp-inline {
+  background: #25D366; /* WhatsApp green */
+  color: #ffffff;
+  border-color: #25D366;
+  box-shadow: none;
+}
+
+#whatsappCardBtn:hover,
+.btn-whatsapp-inline:hover {
+  background: #128C7E; /* darker WhatsApp green */
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .order-actions-vertical {
@@ -1493,8 +1826,8 @@ label {
 
 /* ========== FOOTER ========== */
 .footer {
-  margin-top: var(--space-9);
-  padding: var(--space-8) var(--container-padding);
+  margin-top: var(--space-6);
+  padding: var(--space-4) var(--container-padding);
   background: var(--bg-dark);
   color: var(--color-white);
 }
@@ -1506,13 +1839,19 @@ label {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--space-5);
+  gap: var(--space-3);
 }
 
-.footer > div:first-child,
-.footer-inner > div:first-child {
+.footer > .copyright,
+.footer-inner > .copyright {
   font-size: var(--font-size-sm);
   color: rgba(255, 255, 255, 0.6);
+}
+
+.footer-inner .copyright {
+  width: 100%;
+  text-align: center;
+  margin-top: var(--space-3);
 }
 
 .social {
@@ -1528,8 +1867,12 @@ label {
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.18);
   transition: var(--transition-fast);
+}
+
+.social-icon:hover {
+  background: rgba(255, 255, 255, 0.28);
 }
 
 .social-icon:hover {
@@ -1561,9 +1904,9 @@ label {
 
 .related-list {
   display: flex;
-  gap: var(--space-5);
+  gap: calc(var(--space-6));
   overflow-x: auto;
-  padding: var(--space-2);
+  padding: var(--space-3) var(--space-2);
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
 }
@@ -1572,26 +1915,36 @@ label {
   display: none;
 }
 
+
 .related-item {
-  min-width: 180px;
+  min-width: 220px;
   flex: 0 0 auto;
   text-align: center;
   background: var(--color-light);
-  padding: var(--space-4);
+  padding: calc(var(--space-5));
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
   scroll-snap-align: start;
-  transition: var(--transition-fast);
+  transition: transform .18s ease, box-shadow .18s ease;
 }
 
 .related-item:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+/* Remove any red focus/active outline applied elsewhere; keep neutral focus for accessibility */
+.related-item:focus,
+.related-item:active,
+.related-item:focus-visible {
+  outline: none !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.06) !important;
+  border-color: transparent !important;
 }
 
 .related-item img {
   width: 100%;
-  height: 120px;
+  height: 160px;
   object-fit: cover;
   border-radius: var(--radius-md);
 }
@@ -1614,8 +1967,10 @@ label {
     height: fit-content;
   }
   
-  .main-image {
-    height: 500px;
+  .carousel-container {
+    aspect-ratio: 1 / 1;
+    min-height: 620px;
+    max-height: 780px;
   }
 }
 
@@ -1630,8 +1985,10 @@ label {
     padding: var(--space-6) var(--space-5);
   }
   
-  .main-image {
-    height: 420px;
+  .carousel-container {
+    aspect-ratio: 1 / 1;
+    min-height: 540px;
+    max-height: 620px;
   }
 }
 
@@ -1645,16 +2002,31 @@ label {
   .gallery {
     position: relative;
     top: auto;
-    padding: var(--space-5);
+    padding: var(--space-3);
   }
   
   .details {
     padding: var(--space-5);
   }
   
-  .main-image {
-    height: 350px;
-    aspect-ratio: 4/3;
+  .carousel-container {
+    aspect-ratio: 1/1;
+    min-height: 480px;
+    max-height: 560px;
+  }
+  
+  .carousel-nav {
+    opacity: 1;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .carousel-prev {
+    left: calc(-1 * var(--space-4));
+  }
+  
+  .carousel-next {
+    right: calc(-1 * var(--space-4));
   }
   
   .title {
@@ -1673,7 +2045,7 @@ label {
   
   .order-thumb {
     width: 100%;
-    height: 220px;
+    height: 260px;
   }
   
   .order-cta h2 {
@@ -1707,13 +2079,63 @@ label {
   
   .gallery,
   .details {
-    padding: var(--space-4);
+    padding: var(--space-3);
     border-radius: var(--radius-lg);
   }
   
-  .main-image {
-    height: 300px;
+  .carousel-container {
+    aspect-ratio: 1/1;
+    min-height: 400px;
+    max-height: 480px;
     border-radius: var(--radius-md);
+  }
+  
+  .carousel-slide {
+    padding: 0;
+  }
+  
+  .carousel-nav {
+    width: 36px;
+    height: 36px;
+    opacity: 0.9;
+  }
+  
+  .carousel-nav svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .carousel-dots {
+    margin-top: var(--space-3);
+  }
+  
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .carousel-dot.active {
+    width: 24px;
+  }
+  
+  .thumbs {
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: var(--space-2) var(--space-1);
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  
+  .thumb {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    border-width: 2px;
+    scroll-snap-align: start;
   }
   
   .title {
@@ -1728,17 +2150,6 @@ label {
   
   .price {
     font-size: var(--font-size-xl);
-  }
-  
-  .thumbs {
-    gap: var(--space-2);
-  }
-  
-  .thumbs img {
-    width: 58px;
-    height: 58px;
-    min-width: 58px;
-    border-width: 2px;
   }
   
   .who-for {
@@ -1941,6 +2352,68 @@ label {
     padding: var(--space-3) var(--space-2);
   }
   
+  .gallery {
+    padding: var(--space-2);
+  }
+  
+  .carousel-container {
+    aspect-ratio: 1/1;
+    min-height: 380px;
+    max-height: 450px;
+    border-radius: var(--radius-sm);
+  }
+  
+  .carousel-slide {
+    padding: 0;
+  }
+  
+  .carousel-nav {
+    width: 32px;
+    height: 32px;
+    opacity: 0.85;
+  }
+  
+  .carousel-nav svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .carousel-prev {
+    left: calc(-1 * var(--space-2));
+  }
+  
+  .carousel-next {
+    right: calc(-1 * var(--space-2));
+  }
+  
+  .carousel-dots {
+    margin-top: var(--space-2);
+    gap: 6px;
+  }
+  
+  .carousel-dot {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .carousel-dot.active {
+    width: 20px;
+  }
+  
+  .thumbs {
+    margin-top: var(--space-2);
+    gap: 6px;
+    padding: var(--space-1);
+  }
+  
+  .thumb {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-width: 2px;
+    border-radius: var(--radius-sm);
+  }
+  
   .top-banner {
     padding: var(--space-2) var(--space-3);
     font-size: 0.8rem;
@@ -2051,6 +2524,32 @@ label {
   .stock-actions {
     width: 100%;
   }
+
+/* Mobile: place .discount into top-right corner of the price card */
+@media (max-width: 600px) {
+  .price-row {
+    position: relative;
+    padding-right: calc(var(--space-6) + 20px);
+  }
+
+  .price-row > div:first-child {
+    /* leave room on the right for the absolute discount */
+    padding-right: calc(var(--space-6) + 12px);
+  }
+
+  .discount {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    background: transparent;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    padding: 6px 10px;
+    font-size: var(--font-size-xs);
+    border-radius: var(--radius-sm);
+    box-shadow: none !important;
+  }
+}
   
   #orderBtnSmall,
   #orderBtn {
@@ -2221,39 +2720,49 @@ label {
   /* Reviews Section Mobile */
   .reviews {
     margin-top: var(--space-4);
+    padding: var(--space-5) var(--space-3); /* increase vertical padding to make section taller */
   }
-  
+
   .reviews h2 {
     font-size: var(--font-size-md);
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-3);
   }
-  
+
   .reviews-card {
     padding: var(--space-4);
     border-radius: var(--radius-md);
   }
-  
+
   .review-gallery {
-    gap: var(--space-2);
+    gap: calc(var(--space-3));
     margin: 0 calc(-1 * var(--space-2));
-    padding: var(--space-1) var(--space-2) var(--space-3);
+    padding: var(--space-2) var(--space-2) var(--space-3);
+    min-height: 300px; /* taller gallery area on mobile */
   }
-  
+
   .review-thumb {
-    min-width: 120px;
-    max-width: 140px;
+    min-width: 160px;
+    max-width: 180px;
     border-radius: var(--radius-sm);
   }
-  
+
   .review-thumb img {
-    height: 85px;
+    height: 200px; /* larger thumb images on mobile for a taller look */
     border-radius: var(--radius-sm);
   }
-  
+
   .review-thumb .caption {
     font-size: var(--font-size-xs);
     padding: var(--space-1);
   }
+
+/* Centered hint under reviews heading */
+.reviews-hint {
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  margin: calc(var(--space-2) / 2) 0 var(--space-2);
+}
   
   /* Lightbox Mobile */
   .lightbox {
@@ -2347,8 +2856,11 @@ label {
   }
   
   .order-thumb {
-    height: 180px;
+    height: 220px;
     border-radius: var(--radius-md);
+    background: var(--color-white);
+    padding: var(--space-3);
+    box-shadow: var(--shadow-sm);
   }
   
   .order-inline-form .form-row {
@@ -2534,7 +3046,8 @@ label {
   }
   
   .social {
-    gap: var(--space-2);
+    gap: var(--space-4);
+    margin-top: var(--space-3);
   }
   
   .social-icon {
@@ -2565,22 +3078,57 @@ label {
   }
   
   .gallery {
-    padding: var(--space-2);
+    padding: var(--space-1);
   }
   
   .details {
     padding: var(--space-3);
   }
   
-  .main-image {
-    height: 220px;
-    margin-bottom: var(--space-2);
+  .carousel-container {
+    aspect-ratio: 1/1;
+    min-height: 340px;
+    max-height: 400px;
+    border-radius: 8px;
   }
   
-  .thumbs img {
-    width: 46px;
-    height: 46px;
-    min-width: 46px;
+  .carousel-slide {
+    padding: 0;
+  }
+  
+  .carousel-nav {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .carousel-nav svg {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .carousel-dots {
+    margin-top: var(--space-2);
+  }
+  
+  .carousel-dot {
+    width: 5px;
+    height: 5px;
+  }
+  
+  .carousel-dot.active {
+    width: 16px;
+  }
+  
+  .thumbs {
+    gap: 4px;
+    margin-top: var(--space-2);
+  }
+  
+  .thumb {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 6px;
   }
   
   .title {
@@ -2716,7 +3264,7 @@ label {
 .floating-buttons {
   position: fixed;
   right: 20px;
-  bottom: 100px;
+  bottom: 24px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -2793,7 +3341,7 @@ label {
 @media (max-width: 520px) {
   .floating-buttons {
     right: 12px;
-    bottom: 85px;
+    bottom: 18px;
     gap: 10px;
   }
   
@@ -2810,6 +3358,13 @@ label {
   
   .float-btn:hover {
     transform: translateY(-2px);
+  }
+}
+
+/* Ensure social icons spacing on small screens isn't excessive */
+@media (max-width: 520px) {
+  .footer .social {
+    margin-top: var(--space-2);
   }
 }
 

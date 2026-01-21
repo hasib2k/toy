@@ -1,10 +1,147 @@
 // Basic interactions for the single-product page
 document.addEventListener('DOMContentLoaded', function(){
-  // Thumbnail click to change main image
-  document.querySelectorAll('.thumb').forEach(function(t){
+  // ========== Hero Image Carousel ==========
+  var carouselTrack = document.getElementById('carouselTrack');
+  var carouselSlides = document.querySelectorAll('.carousel-slide');
+  var carouselPrev = document.querySelector('.carousel-prev');
+  var carouselNext = document.querySelector('.carousel-next');
+  var carouselDots = document.querySelectorAll('.carousel-dot');
+  var thumbButtons = document.querySelectorAll('.thumbs .thumb');
+  var currentSlide = 0;
+  var totalSlides = carouselSlides.length;
+  var autoplayInterval = null;
+  var touchStartX = 0;
+  var touchEndX = 0;
+
+  function updateCarousel(index, smooth) {
+    if (index < 0) index = totalSlides - 1;
+    if (index >= totalSlides) index = 0;
+    currentSlide = index;
+    
+    if (carouselTrack) {
+      carouselTrack.style.transition = smooth !== false ? 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)' : 'none';
+      carouselTrack.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+    }
+    
+    // Update dots
+    carouselDots.forEach(function(dot, i) {
+      dot.classList.toggle('active', i === currentSlide);
+    });
+    
+    // Update thumbnails
+    thumbButtons.forEach(function(thumb, i) {
+      thumb.classList.toggle('active', i === currentSlide);
+    });
+  }
+
+  // Navigation arrows
+  if (carouselPrev) {
+    carouselPrev.addEventListener('click', function() {
+      updateCarousel(currentSlide - 1);
+      resetAutoplay();
+    });
+  }
+  
+  if (carouselNext) {
+    carouselNext.addEventListener('click', function() {
+      updateCarousel(currentSlide + 1);
+      resetAutoplay();
+    });
+  }
+
+  // Dot navigation
+  carouselDots.forEach(function(dot, index) {
+    dot.addEventListener('click', function() {
+      updateCarousel(index);
+      resetAutoplay();
+    });
+  });
+
+  // Thumbnail navigation
+  thumbButtons.forEach(function(thumb, index) {
+    thumb.addEventListener('click', function() {
+      updateCarousel(index);
+      resetAutoplay();
+    });
+  });
+
+  // Touch/swipe support for mobile
+  if (carouselTrack) {
+    carouselTrack.addEventListener('touchstart', function(e) {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    carouselTrack.addEventListener('touchend', function(e) {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
+  }
+
+  function handleSwipe() {
+    var swipeThreshold = 50;
+    var diff = touchStartX - touchEndX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        // Swipe left - next slide
+        updateCarousel(currentSlide + 1);
+      } else {
+        // Swipe right - previous slide
+        updateCarousel(currentSlide - 1);
+      }
+      resetAutoplay();
+    }
+  }
+
+  // Autoplay (optional - 5 second interval)
+  function startAutoplay() {
+    autoplayInterval = setInterval(function() {
+      updateCarousel(currentSlide + 1);
+    }, 5000);
+  }
+
+  function resetAutoplay() {
+    if (autoplayInterval) {
+      clearInterval(autoplayInterval);
+    }
+    startAutoplay();
+  }
+
+  // Start autoplay on load
+  if (carouselSlides.length > 1) {
+    startAutoplay();
+  }
+
+  // Pause autoplay on hover (desktop)
+  var carouselContainer = document.querySelector('.carousel-container');
+  if (carouselContainer) {
+    carouselContainer.addEventListener('mouseenter', function() {
+      if (autoplayInterval) clearInterval(autoplayInterval);
+    });
+    carouselContainer.addEventListener('mouseleave', function() {
+      startAutoplay();
+    });
+  }
+
+  // Keyboard navigation for carousel
+  document.addEventListener('keydown', function(e) {
+    if (document.activeElement && document.activeElement.closest('.hero-carousel')) {
+      if (e.key === 'ArrowLeft') {
+        updateCarousel(currentSlide - 1);
+        resetAutoplay();
+      } else if (e.key === 'ArrowRight') {
+        updateCarousel(currentSlide + 1);
+        resetAutoplay();
+      }
+    }
+  });
+
+  // Legacy: Thumbnail click to change main image (fallback for old structure)
+  document.querySelectorAll('.thumb[data-src]').forEach(function(t){
     t.addEventListener('click', function(){
       var src = this.getAttribute('data-src');
-      document.getElementById('mainPhoto').src = src;
+      var mainPhoto = document.getElementById('mainPhoto');
+      if (mainPhoto) mainPhoto.src = src;
     });
   });
 
@@ -36,6 +173,19 @@ document.addEventListener('DOMContentLoaded', function(){
     orderTriggers.forEach(function(btn){
       btn.addEventListener('click', function(e){
         e.preventDefault();
+        // If this is the small inline order button, scroll to the inline order form instead of opening modal
+        if(btn.id === 'orderBtnSmall'){
+          var inlineSection = document.getElementById('order-cta');
+          if(inlineSection){
+            inlineSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // focus the first inline input after scroll
+            setTimeout(function(){
+              var nameInline = document.getElementById('name_inline');
+              if(nameInline) nameInline.focus();
+            }, 500);
+          }
+          return;
+        }
         if(!modal) return;
         savedScrollY = window.scrollY;
         modal.style.display = 'flex';
@@ -359,19 +509,45 @@ document.addEventListener('DOMContentLoaded', function(){
     var phone = '+8801619703227';
     var titleEl = document.querySelector('.title') || document.querySelector('.pname');
     var title = titleEl ? titleEl.textContent.trim() : '';
+
+    // Prefer inline form values, fall back to modal form
+    var name = (document.getElementById('name_inline') && document.getElementById('name_inline').value.trim()) || (document.getElementById('name') && document.getElementById('name').value.trim()) || '';
+    var phoneInput = (document.getElementById('phone_inline') && document.getElementById('phone_inline').value.trim()) || (document.getElementById('phone') && document.getElementById('phone').value.trim()) || '';
+    var address = (document.getElementById('address_inline') && document.getElementById('address_inline').value.trim()) || (document.getElementById('address') && document.getElementById('address').value.trim()) || '';
+
+    var qty = parseInt((document.getElementById('qty_inline') && document.getElementById('qty_inline').value) || (document.getElementById('qty') && document.getElementById('qty').value) || 1, 10) || 1;
+
+    // area: check inline select/radios then modal
+    var area = 'inside';
+    var areaInlineSel = document.getElementById('area_inline');
+    if(areaInlineSel) area = areaInlineSel.value || area;
+    else { var checkedInline = document.querySelector('#orderFormInline input[name="area"]:checked'); if(checkedInline) area = checkedInline.value || area; }
+    if(!area){ var areaSel = document.getElementById('area'); if(areaSel) area = areaSel.value || 'inside'; else { var checked = document.querySelector('input[name="area"]:checked'); if(checked) area = checked.value || 'inside'; } }
+
+    // base, shipping, total: prefer inline elements then modal elements
     var base = 0;
     if(typeof basePriceElInline !== 'undefined' && basePriceElInline){ base = parsePrice(basePriceElInline.textContent || basePriceElInline.innerText); }
     if(!base && basePriceEl){ base = parsePrice(basePriceEl.textContent || basePriceEl.innerText); }
-    var qty = 1;
-    var area = 'inside';
-    var ship = 60;
-    var total = base * qty + ship;
+
+    var ship = 0;
+    if(typeof shippingElInline !== 'undefined' && shippingElInline){ ship = parsePrice(shippingElInline.textContent || shippingElInline.innerText); }
+    if(!ship && shippingEl){ ship = parsePrice(shippingEl.textContent || shippingEl.innerText); }
+    if(!ship) { ship = (area === 'inside') ? 60 : 120; }
+
+    var total = 0;
+    if(typeof totalElInline !== 'undefined' && totalElInline){ total = parsePrice(totalElInline.textContent || totalElInline.innerText); }
+    if(!total && totalEl){ total = parsePrice(totalEl.textContent || totalEl.innerText); }
+    if(!total) { total = base * qty + ship; }
 
     var parts = ['অর্ডার অনুরোধ:'];
     if(title) parts.push('পণ্যের নাম: ' + title);
+    if(name) parts.push('নাম: ' + name);
+    if(phoneInput) parts.push('ফোন: ' + phoneInput);
+    if(address) parts.push('ঠিকানা: ' + address);
     if(base) parts.push('মূল্য: ৳' + base.toFixed(2));
     parts.push('পরিমাণ: ' + qty);
     parts.push('ডেলিভারি এলাকা: ' + area);
+    if(ship) parts.push('শিপিং: ৳' + ship.toFixed(2));
     parts.push('মোট: ৳' + total.toFixed(2));
 
     var text = encodeURIComponent(parts.join('\n'));
