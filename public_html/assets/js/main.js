@@ -1,5 +1,13 @@
 // Basic interactions for the single-product page
 document.addEventListener('DOMContentLoaded', function(){
+  // Get dynamic configuration from window
+  const CONFIG = window.SITE_CONFIG || {
+    product_price: 0,
+    shipping_inside: 0,
+    shipping_outside: 0,
+    whatsapp_number: ''
+  };
+
   // ========== Hero Image Carousel ==========
   var carouselTrack = document.getElementById('carouselTrack');
   var carouselSlides = document.querySelectorAll('.carousel-slide');
@@ -260,14 +268,14 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   function updateTotals(){
-    var base = basePriceEl ? parsePrice(basePriceEl.textContent || basePriceEl.innerText) : 0;
+    var base = basePriceEl ? parsePrice(basePriceEl.textContent || basePriceEl.innerText) : CONFIG.product_price;
     var qty = qtyInput ? (parseInt(qtyInput.value || 1, 10) || 1) : 1;
     var area = 'inside';
     // prefer select#area if present, otherwise legacy radio inputs
     var areaSelectEl = orderForm ? orderForm.querySelector('#area') : null;
     if(areaSelectEl){ area = areaSelectEl.value || 'inside'; }
     else { area = (orderForm.querySelector('input[name="area"]:checked')||{}).value || 'inside'; }
-    var ship = (area === 'inside') ? 60 : 120;
+    var ship = (area === 'inside') ? CONFIG.shipping_inside : CONFIG.shipping_outside;
     shippingEl.textContent = '৳' + ship.toFixed(2);
     var total = base * qty + ship;
     totalEl.textContent = '৳' + total.toFixed(2);
@@ -276,13 +284,13 @@ document.addEventListener('DOMContentLoaded', function(){
   // update totals for inline form (keeps inline UI in sync)
   function updateTotalsInline(){
     if(!basePriceElInline || !qtyInputInline || !shippingElInline || !totalElInline) return;
-    var base = parsePrice(basePriceElInline.textContent || basePriceElInline.innerText);
+    var base = parsePrice(basePriceElInline.textContent || basePriceElInline.innerText) || CONFIG.product_price;
     var qty = parseInt(qtyInputInline.value || 1, 10) || 1;
     var area = 'inside';
     var areaSelectInline = document.getElementById('area_inline');
     if(areaSelectInline) area = areaSelectInline.value || 'inside';
     else { area = (document.querySelector('#orderFormInline input[name="area"]:checked')||{}).value || 'inside'; }
-    var ship = (area === 'inside') ? 60 : 120;
+    var ship = (area === 'inside') ? CONFIG.shipping_inside : CONFIG.shipping_outside;
     shippingElInline.textContent = '৳' + ship.toFixed(2);
     var total = base * qty + ship;
     totalElInline.textContent = '৳' + total.toFixed(2);
@@ -495,18 +503,21 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   if(wa){ wa.addEventListener('click', function(){
-    var phone = '+8801619703227';
+    var phone = CONFIG.whatsapp_number || '+8801619703227';
+    var phoneSan = phone.replace(/^\+/, '');
     var text = buildWhatsAppText();
-    window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+    window.open('https://wa.me/' + phoneSan + '?text=' + text, '_blank');
   }); }
 
   if(wa2){ wa2.addEventListener('click', function(){
-    var phone = '+8801619703227';
+    var phone = CONFIG.whatsapp_number || '+8801619703227';
+    var phoneSan = phone.replace(/^\+/, '');
     var text = buildWhatsAppText();
-    window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+    window.open('https://wa.me/' + phoneSan + '?text=' + text, '_blank');
   }); }
   if(waCard){ waCard.addEventListener('click', function(){
-    var phone = '+8801619703227';
+    var phone = CONFIG.whatsapp_number || '+8801619703227';
+    var phoneSan = phone.replace(/^\+/, '');
     var titleEl = document.querySelector('.title') || document.querySelector('.pname');
     var title = titleEl ? titleEl.textContent.trim() : '';
 
@@ -532,7 +543,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var ship = 0;
     if(typeof shippingElInline !== 'undefined' && shippingElInline){ ship = parsePrice(shippingElInline.textContent || shippingElInline.innerText); }
     if(!ship && shippingEl){ ship = parsePrice(shippingEl.textContent || shippingEl.innerText); }
-    if(!ship) { ship = (area === 'inside') ? 60 : 120; }
+    if(!ship) { ship = (area === 'inside') ? Number(CONFIG.shipping_inside || 0) : Number(CONFIG.shipping_outside || 0); }
 
     var total = 0;
     if(typeof totalElInline !== 'undefined' && totalElInline){ total = parsePrice(totalElInline.textContent || totalElInline.innerText); }
@@ -551,7 +562,7 @@ document.addEventListener('DOMContentLoaded', function(){
     parts.push('মোট: ৳' + total.toFixed(2));
 
     var text = encodeURIComponent(parts.join('\n'));
-    window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+    window.open('https://wa.me/' + phoneSan + '?text=' + text, '_blank');
   }); }
   var phoneOrderBtn = document.getElementById('phoneOrderBtn');
   if(phoneOrderBtn){ phoneOrderBtn.addEventListener('click', function(){ window.location.href = 'tel:+8801619703227'; }); }

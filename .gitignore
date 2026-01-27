@@ -1,5 +1,8 @@
 # ignore uploads and logs
-/public_html/uploads/
+/public_html/assets/images/uploads/*
+!/public_html/assets/images/uploads/.gitkeep
+/public_html/assets/videos/uploads/*
+!/public_html/assets/videos/uploads/.gitkeep
 /public_html/logs/
 
 # node
@@ -8,5 +11,15 @@
 # build output (optional)
 /website_build/
 
-# environment
+# environment / secrets
 /public_html/config/.env
+*.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp

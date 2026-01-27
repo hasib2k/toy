@@ -1,20 +1,26 @@
 <?php
 /**
- * Database Configuration for Hostinger
+ * Database Configuration
  * 
- * INSTRUCTIONS:
- * 1. Go to Hostinger hPanel → Databases → MySQL Databases
- * 2. Create a new database and note the credentials
- * 3. Replace the values below with your Hostinger database credentials
+ * ENVIRONMENT DETECTION:
+ * - Uses environment variables if set (recommended for production)
+ * - Falls back to hardcoded values for local development
+ * 
+ * FOR HOSTINGER:
+ * Option 1: Set environment variables in hPanel → Advanced → Cron Jobs → Environment
+ * Option 2: Edit the fallback values below directly after deployment
  */
 
 // ============================================
-// HOSTINGER DATABASE CREDENTIALS - UPDATE THESE
+// DATABASE CREDENTIALS
 // ============================================
-$DB_HOST = 'localhost';                    // Usually 'localhost' on Hostinger
-$DB_NAME = 'u123456789_toystore';          // Your database name (e.g., u123456789_toystore)
-$DB_USER = 'u123456789_admin';             // Your database username
-$DB_PASS = 'YourSecurePassword123!';       // Your database password
+// Environment variables take priority (for production security)
+// Fallback values are for local development
+
+$DB_HOST = getenv('DB_HOST') ?: 'localhost';
+$DB_NAME = getenv('DB_NAME') ?: 'babu_toys';           // Hostinger: u123456789_babutoys
+$DB_USER = getenv('DB_USER') ?: 'root';                // Hostinger: u123456789_admin  
+$DB_PASS = getenv('DB_PASS') ?: '';                    // Hostinger: YourSecurePassword
 // ============================================
 
 $options = [
@@ -26,10 +32,9 @@ $options = [
 try {
     $pdo = new PDO("mysql:host={$DB_HOST};dbname={$DB_NAME};charset=utf8mb4", $DB_USER, $DB_PASS, $options);
 } catch (Exception $e) {
-    // Log error in production (don't expose details)
-    error_log("Database connection failed: " . $e->getMessage());
-    http_response_code(500);
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode(['success' => false, 'message' => 'Database connection failed']);
-    exit;
+    // Log error for debugging (optional)
+    // error_log("Database connection failed: " . $e->getMessage());
+    
+    // Don't exit - let the application handle the missing connection
+    $pdo = null;
 }
