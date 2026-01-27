@@ -1,11 +1,15 @@
+# Babu Toys — Single-Product CMS
+
+A modern, Hostinger-ready, single-product e-commerce CMS with full admin control, dynamic content, and secure PHP+MySQL backend.
+
 ---
 
-## Current Project Status (2026-01-28)
+## 🚀 Project Status (2026-01-28)
 
-**Live-ready, Hostinger-compatible, full CMS for single-product store.**
+**Live-ready, Hostinger-compatible, full CMS for a single-product store.**
 
-### Key Features
-- Modern PHP+MySQL backend, server-rendered admin, REST-style API
+### ✨ Key Features
+- Modern PHP+MySQL backend, REST-style API
 - All content (banners, product, reviews, features, videos, footer, etc) editable from admin
 - File/image/video uploads with progress, safe fallback images
 - Admin panel with tab persistence, toast notifications, and secure session auth
@@ -14,7 +18,7 @@
 - Security: .htaccess rules, no hardcoded localhost, uploads protected, HTTPS ready
 - Hostinger deployment: ready for GitHub auto-deploy, with [HOSTINGER_DEPLOYMENT.md](HOSTINGER_DEPLOYMENT.md) and [hostinger_schema.sql](hostinger_schema.sql)
 
-### Deployment Checklist
+### ✅ Deployment Checklist
 - [x] All code and assets in `public_html/` (Hostinger web root)
 - [x] Database config supports env vars and Hostinger credentials
 - [x] All uploads use `assets/images/uploads/` and `assets/videos/uploads/` (auto-created)
@@ -24,12 +28,12 @@
 - [x] Database schema and default data in `hostinger_schema.sql`
 - [x] Full deployment guide in `HOSTINGER_DEPLOYMENT.md`
 
-### How to Deploy
+### 📦 How to Deploy
 See [HOSTINGER_DEPLOYMENT.md](HOSTINGER_DEPLOYMENT.md) for step-by-step instructions for Hostinger shared hosting via GitHub.
 
 ---
 
-## 📁 Updated Folder Structure
+## 📁 Folder Structure
 
 ```
 ├── .gitignore
